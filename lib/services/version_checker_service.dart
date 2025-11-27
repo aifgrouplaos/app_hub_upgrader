@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:app_hub_upgrader/config/api_config.dart';
 import 'package:app_hub_upgrader/exception/app_exception.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -26,6 +27,8 @@ class VersionCheckerService {
 
       final String appVersion = currentVersion ?? await _version();
       final String platformName = platform ?? _platform;
+
+      debugPrint('Checking for update: $baseUrl');
 
       final uri = Uri.parse(baseUrl).replace(
         queryParameters: {
@@ -57,6 +60,7 @@ class VersionCheckerService {
 
       return apiResponse.data!;
     } catch (e) {
+      debugPrint('Error checking for update: $e');
       throw AppException(e.toString(), 500);
     }
   }

@@ -59,23 +59,7 @@ flutter pub get
 
 ### Quick Start
 
-1. **Initialize the package** in your `main.dart` (optional - for .env support):
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:app_hub_upgrader/app_hub_upgrader.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize to load .env file (optional - will use defaults if not called)
-  await AppHubUpgrader.initialize();
-
-  runApp(MyApp());
-}
-```
-
-2. **Use AppHubUpgrader** in your app:
+**Use AppHubUpgrader** in your app:
 
 ```dart
 final upgrader = AppHubUpgrader(

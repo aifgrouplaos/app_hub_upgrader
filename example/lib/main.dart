@@ -1,12 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:app_hub_upgrader/app_hub_upgrader.dart';
+import 'package:flutter/material.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize to load .env file (optional - package will use defaults if not loaded)
-  // Uncomment the line below if you have a .env file
-  await AppHubUpgrader.initialize();
 
   runApp(const MyApp());
 }

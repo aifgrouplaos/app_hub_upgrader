@@ -514,20 +514,6 @@ This package follows [Semantic Versioning](https://semver.org/). The current ver
 
 For version history, see [CHANGELOG.md](CHANGELOG.md).
 
-### Installing Specific Versions
-
-When installing from git, you can specify a version tag:
-
-```yaml
-dependencies:
-  app_hub_upgrader:
-    git:
-      url: https://github.com/aifgrouplaos/app_hub_upgrader.git
-      ref: v1.0.0 # Specific version
-```
-
-Available versions can be found in the [GitHub releases](https://github.com/aifgrouplaos/app_hub_upgrader/releases) or by checking git tags.
-
 ## License
 
 See the `LICENSE` file for details.

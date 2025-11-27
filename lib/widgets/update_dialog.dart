@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/version_info_model.dart';
+import '../utils/app_logger.dart';
 
 /// A customizable dialog widget for displaying app update information
 class UpdateDialog extends StatelessWidget {
@@ -41,9 +42,7 @@ class UpdateDialog extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async => !updateInfo.isForcedUpdate,
       child: Dialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         backgroundColor: defaultBackgroundColor,
         child: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -55,17 +54,14 @@ class UpdateDialog extends StatelessWidget {
               if (customIcon != null)
                 customIcon!
               else
-                Icon(
-                  Icons.system_update,
-                  size: 64,
-                  color: defaultPrimaryColor,
-                ),
+                Icon(Icons.system_update, size: 64, color: defaultPrimaryColor),
               const SizedBox(height: 16),
 
               // Title
               Text(
                 title ?? 'Update Available',
-                style: titleStyle ??
+                style:
+                    titleStyle ??
                     theme.textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                       color: theme.colorScheme.onSurface,
@@ -78,7 +74,8 @@ class UpdateDialog extends StatelessWidget {
               if (updateInfo.latestVersion != null)
                 Text(
                   'Version ${updateInfo.latestVersion} is now available',
-                  style: contentStyle ??
+                  style:
+                      contentStyle ??
                       theme.textTheme.bodyMedium?.copyWith(
                         color: theme.colorScheme.onSurface.withOpacity(0.7),
                       ),
@@ -106,30 +103,33 @@ class UpdateDialog extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      ...updateInfo.changelog!.fixes.map((fix) => Padding(
-                            padding: const EdgeInsets.only(bottom: 4),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '• ',
-                                  style: theme.textTheme.bodySmall?.copyWith(
-                                    color: theme.colorScheme.onSurfaceVariant,
-                                  ),
+                      ...updateInfo.changelog!.fixes.map(
+                        (fix) => Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '• ',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.colorScheme.onSurfaceVariant,
                                 ),
-                                Expanded(
-                                  child: Text(
-                                    fix,
-                                    style: contentStyle ??
-                                        theme.textTheme.bodySmall?.copyWith(
-                                          color:
-                                              theme.colorScheme.onSurfaceVariant,
-                                        ),
-                                  ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  fix,
+                                  style:
+                                      contentStyle ??
+                                      theme.textTheme.bodySmall?.copyWith(
+                                        color:
+                                            theme.colorScheme.onSurfaceVariant,
+                                      ),
                                 ),
-                              ],
-                            ),
-                          )),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -142,6 +142,10 @@ class UpdateDialog extends StatelessWidget {
                   if (!updateInfo.isForcedUpdate && laterButtonText != null)
                     TextButton(
                       onPressed: () {
+                        AppLogger.info(
+                          'User clicked "Later" button',
+                          'UpdateDialog',
+                        );
                         Navigator.of(context).pop();
                         onLater?.call();
                       },
@@ -150,6 +154,10 @@ class UpdateDialog extends StatelessWidget {
                   const SizedBox(width: 8),
                   ElevatedButton(
                     onPressed: () {
+                      AppLogger.info(
+                        'User clicked "Update" button',
+                        'UpdateDialog',
+                      );
                       Navigator.of(context).pop();
                       onUpdate?.call();
                       _launchUpdateUrl();
@@ -162,9 +170,7 @@ class UpdateDialog extends StatelessWidget {
                         vertical: 12,
                       ),
                     ),
-                    child: Text(
-                      updateButtonText ?? 'Update Now',
-                    ),
+                    child: Text(updateButtonText ?? 'Update Now'),
                   ),
                 ],
               ),
@@ -178,10 +184,23 @@ class UpdateDialog extends StatelessWidget {
   Future<void> _launchUpdateUrl() async {
     if (updateInfo.downloadUrl != null && updateInfo.downloadUrl!.isNotEmpty) {
       final uri = Uri.parse(updateInfo.downloadUrl!);
+      AppLogger.info(
+        'Launching download URL: ${uri.toString()}',
+        'UpdateDialog',
+      );
+
       if (await canLaunchUrl(uri)) {
+        AppLogger.debug('URL can be launched, opening...', 'UpdateDialog');
         await launchUrl(uri, mode: LaunchMode.externalApplication);
+        AppLogger.info('Download URL launched successfully', 'UpdateDialog');
+      } else {
+        AppLogger.warning(
+          'Cannot launch URL: ${uri.toString()}',
+          'UpdateDialog',
+        );
       }
+    } else {
+      AppLogger.warning('No download URL available', 'UpdateDialog');
     }
   }
 }
-

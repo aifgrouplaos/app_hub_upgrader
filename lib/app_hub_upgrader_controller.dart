@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'models/version_info_model.dart';
 import 'services/version_checker_service.dart';
+import 'utils/app_logger.dart';
 import 'widgets/update_dialog.dart';
 
 /// Main controller class for checking app updates and displaying update dialogs
@@ -26,6 +27,11 @@ class AppHubUpgrader {
     bool showDialog = true,
     bool checkOnly = false,
   }) async {
+    AppLogger.info(
+      'Checking for app update (production: $useProduction, checkOnly: $checkOnly)',
+      'AppHubUpgrader',
+    );
+
     try {
       final updateInfo = await _versionChecker.checkForUpdate(
         platform: platform,
@@ -33,20 +39,43 @@ class AppHubUpgrader {
         useProduction: useProduction,
       );
 
+      AppLogger.info(
+        'Update check completed - hasUpdate: ${updateInfo.hasUpdate}, '
+            'latestVersion: ${updateInfo.latestVersion}, '
+            'isForcedUpdate: ${updateInfo.isForcedUpdate}',
+        'AppHubUpgrader',
+      );
+
       if (checkOnly) {
+        AppLogger.debug(
+          'Check only mode - returning update info without showing dialog',
+          'AppHubUpgrader',
+        );
         return updateInfo;
       }
 
       if (updateInfo.hasUpdate && showDialog) {
         final dialogContext = context ?? this.context;
         if (dialogContext != null && dialogContext.mounted) {
+          AppLogger.info('Showing update dialog', 'AppHubUpgrader');
           await _showUpdateDialog(dialogContext, updateInfo);
+        } else {
+          AppLogger.warning(
+            'Cannot show dialog - context is null or not mounted',
+            'AppHubUpgrader',
+          );
         }
+      } else if (!updateInfo.hasUpdate) {
+        AppLogger.info(
+          'No update available - app is up to date',
+          'AppHubUpgrader',
+        );
       }
 
       return updateInfo;
-    } catch (e) {
-      debugPrint('AppHubUpgrader Error: $e');
+    } catch (e, stackTrace) {
+      AppLogger.error('Failed to check for update', e, 'AppHubUpgrader');
+      AppLogger.debug('Stack trace: $stackTrace', 'AppHubUpgrader');
       return null;
     }
   }
@@ -56,6 +85,7 @@ class AppHubUpgrader {
     BuildContext context,
     UpdateInfo updateInfo,
   ) async {
+    AppLogger.info('Manually showing update dialog', 'AppHubUpgrader');
     await _showUpdateDialog(context, updateInfo);
   }
 
@@ -63,6 +93,12 @@ class AppHubUpgrader {
     BuildContext context,
     UpdateInfo updateInfo,
   ) async {
+    AppLogger.debug(
+      'Displaying update dialog - forced: ${updateInfo.isForcedUpdate}, '
+          'version: ${updateInfo.latestVersion}',
+      'AppHubUpgrader',
+    );
+
     await showDialog(
       context: context,
       barrierDismissible: !updateInfo.isForcedUpdate,
@@ -80,6 +116,8 @@ class AppHubUpgrader {
         customIcon: dialogConfig?.customIcon,
       ),
     );
+
+    AppLogger.debug('Update dialog closed', 'AppHubUpgrader');
   }
 }
 

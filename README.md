@@ -81,13 +81,30 @@ dependencies:
 
 ### Quick Start
 
-1. **Import the package** in your Dart file:
+1. **Initialize the package** in your `main.dart` (optional - for .env support):
 
 ```dart
+import 'package:flutter/material.dart';
 import 'package:app_hub_upgrader/app_hub_upgrader.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize to load .env file (optional - will use defaults if not called)
+  await AppHubUpgrader.initialize();
+
+  runApp(MyApp());
+}
 ```
 
-2. **Initialize AppHubUpgrader** with your app ID:
+2. **Create a `.env` file** in your app root (optional):
+
+```env
+API_BASE_URL_PROD=https://your-api.com/api/v1/app-versions/check-update
+API_BASE_URL_DEV=http://your-dev-api.com/api/v1/app-versions/check-update
+```
+
+3. **Use AppHubUpgrader** in your app:
 
 ```dart
 final upgrader = AppHubUpgrader(
@@ -95,15 +112,14 @@ final upgrader = AppHubUpgrader(
   context: context,
   useProduction: true, // Set to false for development API
 );
-```
 
-3. **Check for updates**:
-
-```dart
+// Check for updates
 await upgrader.checkForUpdate();
 ```
 
 That's it! The package will automatically check for updates and show a dialog if a new version is available.
+
+**Note:** If you don't call `initialize()` or don't have a `.env` file, the package will use default API URLs.
 
 ### Step-by-Step Integration
 
@@ -402,12 +418,62 @@ The package expects the API to return a response in the following format:
 
 ## API Configuration
 
-The package uses the following API endpoints by default:
+### Using .env File (Recommended)
+
+The package supports configuration via `.env` file for easy environment management.
+
+1. **Create a `.env` file** in your app's root directory:
+
+```env
+# Production API Base URL
+API_BASE_URL_PROD=https://apphub-service.aifgrouplaos.com/api/v1/app-versions/check-update
+
+# Development API Base URL
+API_BASE_URL_DEV=http://10.69.200.39:31100/api/v1/app-versions/check-update
+```
+
+2. **Initialize the package** in your `main.dart`:
+
+```dart
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Load .env file (optional - package will use defaults if not loaded)
+  await AppHubUpgrader.initialize();
+
+  runApp(MyApp());
+}
+```
+
+3. **Add .env to .gitignore** (if not already there):
+
+```
+.env
+```
+
+4. **Create .env.example** (template for other developers):
+
+```env
+API_BASE_URL_PROD=your_production_url_here
+API_BASE_URL_DEV=your_development_url_here
+```
+
+### Default Configuration
+
+If `.env` file is not provided or `initialize()` is not called, the package uses these default endpoints:
 
 - **Production**: `https://apphub-service.aifgrouplaos.com/api/v1/app-versions/check-update`
 - **Development**: `http://10.69.200.39:31100/api/v1/app-versions/check-update`
 
-You can modify these in `lib/config/api_config.dart` or create your own configuration.
+The package will automatically fall back to these defaults if:
+
+- `.env` file is not found
+- `AppHubUpgrader.initialize()` is not called
+- Environment variables are not set
+
+### Alternative: Modify api_config.dart
+
+You can also modify the default URLs directly in `lib/config/api_config.dart` if you prefer not to use `.env` files.
 
 ## API Parameters
 

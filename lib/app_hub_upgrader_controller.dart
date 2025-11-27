@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'config/api_config.dart';
 import 'models/version_info_model.dart';
 import 'services/version_checker_service.dart';
 import 'widgets/update_dialog.dart';
 
 /// Main controller class for checking app updates and displaying update dialogs
 class AppHubUpgrader {
+  static Future<void> initialize({String filename = '.env'}) async {
+    await ApiConfig.loadEnv(filename: filename);
+  }
+
   final VersionCheckerService _versionChecker;
   final BuildContext? context;
   final bool useProduction;

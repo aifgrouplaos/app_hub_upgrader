@@ -1,7 +1,7 @@
 name: app_hub_upgrader
 description: "A Flutter package for checking app version updates from API and displaying customizable update dialogs."
-version: 0.0.1
-homepage:
+version: 1.0.0+1
+homepage: https://github.com/aifgrouplaos/app_hub_upgrader
 
 environment:
   sdk: ^3.8.1
@@ -21,3 +21,4 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 flutter:
+  uses-material-design: true

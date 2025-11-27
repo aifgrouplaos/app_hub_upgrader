@@ -62,7 +62,7 @@ dependencies:
   app_hub_upgrader:
     git:
       url: https://github.com/aifgrouplaos/app_hub_upgrader.git
-      ref: v1.0.0 # Use specific version tag
+      ref: v1.0.1 # Use specific version tag
 ```
 
 Or use the latest from a branch:

@@ -53,28 +53,6 @@ Then run:
 flutter pub get
 ```
 
-### From Git Repository
-
-You can also install directly from the Git repository:
-
-```yaml
-dependencies:
-  app_hub_upgrader:
-    git:
-      url: https://github.com/aifgrouplaos/app_hub_upgrader.git
-      ref: v1.0.1 # Use specific version tag
-```
-
-Or use the latest from a branch:
-
-```yaml
-dependencies:
-  app_hub_upgrader:
-    git:
-      url: https://github.com/aifgrouplaos/app_hub_upgrader.git
-      ref: main # Use latest from main branch
-```
-
 **Note:** When using git, make sure to specify a tag (e.g., `v1.0.0`) for stable versions, or use a branch name for development versions.
 
 ## Usage
@@ -97,14 +75,7 @@ void main() async {
 }
 ```
 
-2. **Create a `.env` file** in your app root (optional):
-
-```env
-API_BASE_URL_PROD=https://your-api.com/api/v1/app-versions/check-update
-API_BASE_URL_DEV=http://your-dev-api.com/api/v1/app-versions/check-update
-```
-
-3. **Use AppHubUpgrader** in your app:
+2. **Use AppHubUpgrader** in your app:
 
 ```dart
 final upgrader = AppHubUpgrader(

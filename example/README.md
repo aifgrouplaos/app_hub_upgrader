@@ -2,25 +2,32 @@
 
 This example demonstrates how to use the `app_hub_upgrader` package to check for app updates and display update dialogs.
 
+## Prerequisites
+
+- Flutter SDK (>=1.17.0)
+- Dart SDK (^3.8.1)
+
 ## Running the Example
 
-1. Make sure you have Flutter installed and configured.
-
-2. Navigate to the example directory:
+1. **Navigate to the example directory:**
 
    ```bash
    cd example
    ```
 
-3. Get the dependencies:
+2. **Get the dependencies:**
 
    ```bash
    flutter pub get
    ```
 
-4. Update the `appID` in `lib/main.dart` with your actual app ID.
+3. **Update the configuration:**
 
-5. Run the example:
+   - Replace `'your-app-id'` in `lib/main.dart` with your actual app ID
+   - Ensure your API endpoint is correctly configured in the package's `api_config.dart` file
+
+4. **Run the example:**
+
    ```bash
    flutter run
    ```
@@ -44,6 +51,22 @@ The example app provides two buttons:
 
 Before running, make sure to:
 
-1. Replace `'your-app-id'` in `lib/main.dart` with your actual app ID.
-2. Ensure your API endpoint is correctly configured in the package's `api_config.dart` file.
-3. Make sure your API returns the expected response format (see main README.md).
+1. **Set your App ID**: Replace `'your-app-id'` in `lib/main.dart` with your actual app ID from your backend/API.
+
+2. **Configure API Endpoint**: Ensure your API endpoint is correctly configured. The package uses default endpoints, but you can modify them in `lib/config/api_config.dart` if needed.
+
+3. **API Response Format**: Make sure your API returns the expected response format. See the [main README.md](../README.md#api-response-format) for details.
+
+## What This Example Demonstrates
+
+- ✅ Automatic update checking with dialog display
+- ✅ Manual update checking without auto-dialog
+- ✅ Custom dialog configuration
+- ✅ Error handling
+- ✅ Update information display
+
+## Troubleshooting
+
+- **API Connection Issues**: Check your internet connection and API endpoint configuration
+- **No Update Dialog**: Verify your API is returning the correct response format
+- **Build Errors**: Make sure all dependencies are installed with `flutter pub get`

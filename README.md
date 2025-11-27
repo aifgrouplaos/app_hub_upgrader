@@ -1,6 +1,31 @@
 # App Hub Upgrader
 
+[![pub package](https://img.shields.io/pub/v/app_hub_upgrader.svg)](https://pub.dev/packages/app_hub_upgrader)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![GitHub](https://img.shields.io/github/stars/aifgrouplaos/app_hub_upgrader?style=social)](https://github.com/aifgrouplaos/app_hub_upgrader)
+
 A Flutter package for checking app version updates from an API and displaying a customizable update dialog to users.
+
+## Table of Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [Quick Start](#quick-start)
+  - [Step-by-Step Integration](#step-by-step-integration)
+  - [Common Use Cases](#common-use-cases)
+  - [Advanced Configuration](#advanced-configuration)
+- [API Response Format](#api-response-format)
+- [API Configuration](#api-configuration)
+- [UpdateDialog Widget](#updatedialog-widget)
+- [Models](#models)
+- [Error Handling](#error-handling)
+- [Forced Updates](#forced-updates)
+- [Platform Support](#platform-support)
+- [Versioning](#versioning)
+- [Example](#example)
+- [License](#license)
+- [Contributing](#contributing)
 
 ## Features
 
@@ -13,11 +38,13 @@ A Flutter package for checking app version updates from an API and displaying a 
 
 ## Installation
 
+### From pub.dev (Recommended)
+
 Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  app_hub_upgrader: ^0.0.1
+  app_hub_upgrader: ^1.0.0
 ```
 
 Then run:
@@ -25,6 +52,30 @@ Then run:
 ```bash
 flutter pub get
 ```
+
+### From Git Repository
+
+You can also install directly from the Git repository:
+
+```yaml
+dependencies:
+  app_hub_upgrader:
+    git:
+      url: https://github.com/aifgrouplaos/app_hub_upgrader.git
+      ref: v1.0.0 # Use specific version tag
+```
+
+Or use the latest from a branch:
+
+```yaml
+dependencies:
+  app_hub_upgrader:
+    git:
+      url: https://github.com/aifgrouplaos/app_hub_upgrader.git
+      ref: main # Use latest from main branch
+```
+
+**Note:** When using git, make sure to specify a tag (e.g., `v1.0.0`) for stable versions, or use a branch name for development versions.
 
 ## Usage
 
@@ -457,13 +508,37 @@ When `isForcedUpdate` is `true`:
 
 ## Dependencies
 
-- `http`: For making API requests
-- `package_info_plus`: For getting app version information
-- `url_launcher`: For opening download URLs
+This package depends on the following:
+
+- `http: ^1.6.0` - For making API requests
+- `package_info_plus: ^9.0.0` - For getting app version information
+- `url_launcher: ^6.3.1` - For opening download URLs
+
+All dependencies are automatically installed when you add this package to your project.
 
 ## Example
 
 See the `example` folder for a complete working example.
+
+## Versioning
+
+This package follows [Semantic Versioning](https://semver.org/). The current version is `1.0.0`.
+
+For version history, see [CHANGELOG.md](CHANGELOG.md).
+
+### Installing Specific Versions
+
+When installing from git, you can specify a version tag:
+
+```yaml
+dependencies:
+  app_hub_upgrader:
+    git:
+      url: https://github.com/aifgrouplaos/app_hub_upgrader.git
+      ref: v1.0.0 # Specific version
+```
+
+Available versions can be found in the [GitHub releases](https://github.com/aifgrouplaos/app_hub_upgrader/releases) or by checking git tags.
 
 ## License
 
@@ -472,3 +547,14 @@ See the `LICENSE` file for details.
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## Related Documentation
+
+- [Git Versioning Guide](GIT_VERSIONING.md) - How to version the package with git tags
+- [Quick Tag Guide](QUICK_TAG_GUIDE.md) - Quick reference for creating release tags

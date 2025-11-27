@@ -1,4 +1,4 @@
-## 1.0.0+1
+## 1.0.1+3
 
 - Initial release
 - Check for app version updates from API

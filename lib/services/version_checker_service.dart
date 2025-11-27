@@ -30,8 +30,8 @@ class VersionCheckerService {
         'VersionCheckerService',
       );
 
-      final String appVersion = currentVersion ?? await _version();
-      final String platformName = platform ?? _platform;
+      final String appVersion = currentVersion ?? await getVersion();
+      final String platformName = _platform;
 
       AppLogger.debug(
         'App version: $appVersion, Platform: $platformName, App ID: $appID',
@@ -115,7 +115,7 @@ class VersionCheckerService {
 
   String get _platform => Platform.isAndroid ? 'android' : 'ios';
 
-  Future<String> _version() async {
+  Future<String> getVersion() async {
     try {
       final info = await PackageInfo.fromPlatform();
       final version = info.version;

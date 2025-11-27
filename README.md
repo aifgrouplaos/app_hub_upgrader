@@ -387,55 +387,6 @@ The package expects the API to return a response in the following format:
 }
 ```
 
-## API Configuration
-
-### Using .env File (Recommended)
-
-The package supports configuration via `.env` file for easy environment management.
-
-1. **Create a `.env` file** in your app's root directory:
-
-```env
-# Production API Base URL
-API_BASE_URL_PROD=https://apphub-service.aifgrouplaos.com/api/v1/app-versions/check-update
-
-# Development API Base URL
-API_BASE_URL_DEV=http://10.69.200.39:31100/api/v1/app-versions/check-update
-```
-
-2. **Initialize the package** in your `main.dart`:
-
-```dart
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // Load .env file (optional - package will use defaults if not loaded)
-  await AppHubUpgrader.initialize();
-
-  runApp(MyApp());
-}
-```
-
-3. **Add .env to .gitignore** (if not already there):
-
-```
-.env
-```
-
-4. **Create .env.example** (template for other developers):
-
-```env
-API_BASE_URL_PROD=your_production_url_here
-API_BASE_URL_DEV=your_development_url_here
-```
-
-### Default Configuration
-
-If `.env` file is not provided or `initialize()` is not called, the package uses these default endpoints:
-
-- **Production**: `https://apphub-service.aifgrouplaos.com/api/v1/app-versions/check-update`
-- **Development**: `http://10.69.200.39:31100/api/v1/app-versions/check-update`
-
 The package will automatically fall back to these defaults if:
 
 - `.env` file is not found

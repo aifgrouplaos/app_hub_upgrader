@@ -12,6 +12,7 @@ A Flutter package for checking app version updates from an API and displaying a 
 - [Installation](#installation)
 - [Usage](#usage)
   - [Quick Start](#quick-start)
+  - [Initialization](#initialization)
   - [Step-by-Step Integration](#step-by-step-integration)
   - [Common Use Cases](#common-use-cases)
   - [Advanced Configuration](#advanced-configuration)
@@ -44,7 +45,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  app_hub_upgrader: ^1.0.0
+  app_hub_upgrader: ^1.0.1
 ```
 
 Then run:
@@ -53,49 +54,158 @@ Then run:
 flutter pub get
 ```
 
-**Note:** When using git, make sure to specify a tag (e.g., `v1.0.0`) for stable versions, or use a branch name for development versions.
+**Note:** When using git, make sure to specify a tag (e.g., `v1.0.1`) for stable versions, or use a branch name for development versions.
 
 ## Usage
 
 ### Quick Start
 
-**Use AppHubUpgrader** in your app:
+**Step 1: Initialize AppHubUpgrader (Recommended)**
+
+Initialize once in your `main()` function:
+
+```dart
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize AppHubUpgrader with global parameters
+  AppHubUpgrader.initialize(
+    appID: 'your-app-id',
+    navigatorKey: MyApp.navigatorKey,
+    useProduction: true,
+  );
+
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      navigatorKey: navigatorKey,
+      title: 'My App',
+      home: MyHomePage(),
+    );
+  }
+}
+```
+
+**Step 2: Use AppHubUpgrader**
+
+After initialization, create instances without parameters:
+
+```dart
+// Create instance using initialized values
+final upgrader = AppHubUpgrader();
+
+// Check for updates (no context needed!)
+await upgrader.checkForUpdate();
+```
+
+**Alternative: Without Initialization**
+
+You can also use AppHubUpgrader without calling `initialize()`:
 
 ```dart
 final upgrader = AppHubUpgrader(
-  appID: 'your-app-id', // Replace with your actual app ID
-  context: context,
-  useProduction: true, // Set to false for development API
+  appID: 'your-app-id',
+  navigatorKey: MyApp.navigatorKey, // Recommended
+  useProduction: true,
 );
 
-// Check for updates
 await upgrader.checkForUpdate();
 ```
 
 That's it! The package will automatically check for updates and show a dialog if a new version is available.
 
-**Note:** If you don't call `initialize()` or don't have a `.env` file, the package will use default API URLs.
+### Initialization
+
+The `AppHubUpgrader.initialize()` method allows you to set global parameters once, then create instances without passing them each time.
+
+#### Benefits of Initialization
+
+- **Cleaner code**: No need to pass `appID` and `navigatorKey` every time
+- **Centralized configuration**: Manage all settings in one place
+- **Easier maintenance**: Update configuration in one location
+
+#### Initialize in main()
+
+```dart
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize once with all parameters
+  AppHubUpgrader.initialize(
+    appID: 'your-app-id',
+    navigatorKey: MyApp.navigatorKey,
+    useProduction: true,
+    dialogConfig: UpdateDialogConfig(
+      title: 'Update Available',
+      updateButtonText: 'Update Now',
+      laterButtonText: 'Maybe Later',
+    ),
+  );
+
+  runApp(MyApp());
+}
+```
+
+#### Use After Initialization
+
+After calling `initialize()`, you can create instances without parameters:
+
+```dart
+// Simple - uses all initialized values
+final upgrader = AppHubUpgrader();
+await upgrader.checkForUpdate();
+
+// Override specific values if needed
+final devUpgrader = AppHubUpgrader(useProduction: false);
+```
+
+#### Check Initialization Status
+
+```dart
+if (AppHubUpgrader.isInitialized) {
+  print('App ID: ${AppHubUpgrader.initializedAppID}');
+}
+```
 
 ### Step-by-Step Integration
 
-#### Step 1: Add to Your App's Entry Point
+#### Step 1: Initialize in Your App's Entry Point
 
-The most common approach is to check for updates when your app starts. Here's a complete example:
+Initialize AppHubUpgrader in your `main()` function:
 
 ```dart
 import 'package:app_hub_upgrader/app_hub_upgrader.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize AppHubUpgrader
+  AppHubUpgrader.initialize(
+    appID: 'your-app-id', // Get this from your backend/API
+    navigatorKey: MyApp.navigatorKey,
+    useProduction: true,
+  );
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // Global navigator key for showing dialogs
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       title: 'My App',
       home: const MyHomePage(),
     );
@@ -116,12 +226,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
 
-    // Initialize the upgrader
-    _upgrader = AppHubUpgrader(
-      appID: 'your-app-id', // Get this from your backend/API
-      context: context,
-      useProduction: true,
-    );
+    // Create instance using initialized values (no parameters needed!)
+    _upgrader = AppHubUpgrader();
 
     // Check for updates after the first frame is rendered
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -195,16 +301,24 @@ await upgrader.checkForUpdate();
 
 #### Use Case 1: Check on App Launch (Recommended)
 
-Check for updates when the app starts:
+Initialize in `main()` and check for updates when the app starts:
 
 ```dart
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  AppHubUpgrader.initialize(
+    appID: 'your-app-id',
+    navigatorKey: MyApp.navigatorKey,
+  );
+
+  runApp(MyApp());
+}
+
 @override
 void initState() {
   super.initState();
-  final upgrader = AppHubUpgrader(
-    appID: 'your-app-id',
-    context: context,
-  );
+  final upgrader = AppHubUpgrader(); // Uses initialized values
 
   WidgetsBinding.instance.addPostFrameCallback((_) {
     upgrader.checkForUpdate();
@@ -219,10 +333,7 @@ Allow users to manually check for updates:
 ```dart
 ElevatedButton(
   onPressed: () async {
-    final upgrader = AppHubUpgrader(
-      appID: 'your-app-id',
-      context: context,
-    );
+    final upgrader = AppHubUpgrader(); // Uses initialized values
     await upgrader.checkForUpdate();
   },
   child: const Text('Check for Updates'),
@@ -235,10 +346,7 @@ Check for updates at regular intervals:
 
 ```dart
 Timer.periodic(const Duration(hours: 24), (timer) async {
-  final upgrader = AppHubUpgrader(
-    appID: 'your-app-id',
-    context: context,
-  );
+  final upgrader = AppHubUpgrader(); // Uses initialized values
   await upgrader.checkForUpdate();
 });
 ```
@@ -248,31 +356,29 @@ Timer.periodic(const Duration(hours: 24), (timer) async {
 Check for updates and handle the result manually:
 
 ```dart
-final upgrader = AppHubUpgrader(
-  appID: 'your-app-id',
-  useProduction: true,
-);
+final upgrader = AppHubUpgrader(); // Uses initialized values
 
 // Check without showing dialog automatically
 final updateInfo = await upgrader.checkForUpdate(
-  context: context,
   checkOnly: true, // Don't show dialog automatically
 );
 
-if (updateInfo?.hasUpdate == true) {
+if (updateInfo?.updateAvailable == true) {
   // Custom logic based on update info
-  if (updateInfo!.isForcedUpdate) {
+  if (updateInfo!.isForced) {
     // Show custom forced update UI
-    await upgrader.showUpdateDialog(context, updateInfo);
+    await upgrader.showUpdateDialog(updateInfo); // context optional when using navigatorKey
   } else {
     // Show custom optional update UI
     _showCustomUpdateNotification(updateInfo);
   }
 } else {
   // No update available
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('You are using the latest version!')),
-  );
+  if (mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('You are using the latest version!')),
+    );
+  }
 }
 ```
 
@@ -281,8 +387,9 @@ if (updateInfo?.hasUpdate == true) {
 Override automatic detection:
 
 ```dart
+final upgrader = AppHubUpgrader(); // Uses initialized values
+
 final updateInfo = await upgrader.checkForUpdate(
-  context: context,
   currentVersion: '1.0.0', // Override auto-detected version
   platform: 'android',     // Override auto-detected platform
 );
@@ -295,9 +402,15 @@ final updateInfo = await upgrader.checkForUpdate(
 Switch to development API for testing:
 
 ```dart
+// Option 1: Override in instance
 final upgrader = AppHubUpgrader(
+  useProduction: false, // Override initialized value
+);
+
+// Option 2: Initialize with development API
+AppHubUpgrader.initialize(
   appID: 'your-app-id',
-  context: context,
+  navigatorKey: MyApp.navigatorKey,
   useProduction: false, // Use development API
 );
 ```
@@ -332,7 +445,7 @@ You can use the `UpdateDialog` widget directly if you have your own update check
 // After getting UpdateInfo from your own API call
 showDialog(
   context: context,
-  barrierDismissible: !updateInfo.isForcedUpdate,
+  barrierDismissible: !updateInfo.isForced,
   builder: (context) => UpdateDialog(
     updateInfo: updateInfo,
     title: 'Update Required',
@@ -353,12 +466,11 @@ The package expects the API to return a response in the following format:
   "is_success": true,
   "message": "Success",
   "data": {
-    "has_update": true,
-    "latest_version": "1.2.0",
-    "current_version": "1.1.0",
-    "is_forced_update": false,
-    "min_supported_version": "1.0.0",
-    "download_url": "https://play.google.com/store/apps/details?id=com.example.app",
+    "updateAvailable": true,
+    "latestVersion": "1.2.0",
+    "currentVersion": "1.1.0",
+    "isForced": false,
+    "downloadURL": "https://play.google.com/store/apps/details?id=com.example.app",
     "changelog": {
       "fixes": [
         "Fixed bug in login screen",
@@ -366,7 +478,7 @@ The package expects the API to return a response in the following format:
         "Added new features"
       ]
     },
-    "release_date": "2024-01-15"
+    "releaseDate": "2024-01-15"
   }
 }
 ```
@@ -391,14 +503,14 @@ The package sends the following query parameters to the API:
 
 ## UpdateDialog Widget
 
-The `UpdateDialog` widget can be used independently if needed. The `isForcedUpdate` property is automatically read from `updateInfo.isForcedUpdate`:
+The `UpdateDialog` widget can be used independently if needed. The `isForced` property is automatically read from `updateInfo.isForced`:
 
 ```dart
 showDialog(
   context: context,
-  barrierDismissible: !updateInfo.isForcedUpdate, // Prevent dismissal for forced updates
+  barrierDismissible: !updateInfo.isForced, // Prevent dismissal for forced updates
   builder: (context) => UpdateDialog(
-    updateInfo: updateInfo, // isForcedUpdate is read from here
+    updateInfo: updateInfo, // isForced is read from here
     title: 'Update Required',
     updateButtonText: 'Update Now',
     laterButtonText: 'Later',
@@ -430,12 +542,11 @@ Contains information about available updates:
 
 ```dart
 class UpdateInfo {
-  final bool hasUpdate;
+  final bool updateAvailable;
   final String? latestVersion;
   final String? currentVersion;
-  final bool isForcedUpdate;
-  final String? minSupportedVersion;
-  final String? downloadUrl;
+  final bool isForced;
+  final String? downloadURL;
   final Changelog? changelog;
   final String? releaseDate;
 }
@@ -467,7 +578,7 @@ try {
 
 ## Forced Updates
 
-When `isForcedUpdate` is `true`:
+When `isForced` is `true`:
 
 - The dialog cannot be dismissed by tapping outside
 - The "Later" button is hidden
@@ -494,7 +605,7 @@ See the `example` folder for a complete working example.
 
 ## Versioning
 
-This package follows [Semantic Versioning](https://semver.org/). The current version is `1.0.0`.
+This package follows [Semantic Versioning](https://semver.org/). The current version is `1.0.1`.
 
 For version history, see [CHANGELOG.md](CHANGELOG.md).
 

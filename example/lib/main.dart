@@ -4,16 +4,40 @@ import 'package:flutter/material.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Initialize AppHubUpgrader with global parameters
+  AppHubUpgrader.initialize(
+    appID: 'your-app-id', // Replace with your actual app ID
+    navigatorKey: MyApp.navigatorKey,
+    useProduction: true,
+    dialogConfig: UpdateDialogConfig(
+      title: 'New Version Available!',
+      updateButtonText: 'Update Now',
+      laterButtonText: 'Maybe Later',
+      primaryColor: Colors.blue,
+      onUpdate: () {
+        debugPrint('User clicked update button');
+      },
+      onLater: () {
+        debugPrint('User clicked later button');
+      },
+    ),
+  );
+
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // Global key for navigator - recommended for showing dialogs
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'App Hub Upgrader Example',
+      navigatorKey: navigatorKey, // Add navigator key
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
@@ -39,23 +63,11 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    _upgrader = AppHubUpgrader(
-      appID: 'your-app-id', // Replace with your actual app ID
-      context: context,
-      useProduction: true,
-      dialogConfig: UpdateDialogConfig(
-        title: 'New Version Available!',
-        updateButtonText: 'Update Now',
-        laterButtonText: 'Maybe Later',
-        primaryColor: Colors.blue,
-        onUpdate: () {
-          debugPrint('User clicked update button');
-        },
-        onLater: () {
-          debugPrint('User clicked later button');
-        },
-      ),
-    );
+    // Create instance using initialized values (no parameters needed!)
+    _upgrader = AppHubUpgrader();
+
+    // Or override specific values if needed:
+    // _upgrader = AppHubUpgrader(useProduction: false);
   }
 
   Future<void> _checkForUpdate({bool showDialog = true}) async {
@@ -74,6 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
         _updateInfo = updateInfo;
         _isChecking = false;
       });
+
+      if (!mounted) return;
 
       if (updateInfo != null && updateInfo.updateAvailable) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -121,9 +135,10 @@ class _MyHomePageState extends State<MyHomePage> {
       });
 
       if (updateInfo != null && updateInfo.updateAvailable) {
-        if (!context.mounted) return;
-        // Show dialog manually
-        await _upgrader.showUpdateDialog(context, updateInfo);
+        // Show dialog manually - context is optional when using navigatorKey
+        if (mounted) {
+          await _upgrader.showUpdateDialog(updateInfo, context);
+        }
       }
     } catch (e) {
       setState(() {

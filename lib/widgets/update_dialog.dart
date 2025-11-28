@@ -17,6 +17,8 @@ class UpdateDialog extends StatelessWidget {
   final TextStyle? titleStyle;
   final TextStyle? contentStyle;
   final Widget? customIcon;
+  final Widget? customLaterButton;
+  final Widget? customUpdateButton;
 
   const UpdateDialog({
     super.key,
@@ -31,6 +33,8 @@ class UpdateDialog extends StatelessWidget {
     this.titleStyle,
     this.contentStyle,
     this.customIcon,
+    this.customLaterButton,
+    this.customUpdateButton,
   });
 
   @override
@@ -141,38 +145,48 @@ class UpdateDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   if (!updateInfo.isForced && laterButtonText != null)
-                    TextButton(
-                      onPressed: () {
-                        AppLogger.info(
-                          'User clicked "Later" button',
-                          'UpdateDialog',
-                        );
-                        Navigator.of(context).pop();
-                        onLater?.call();
-                      },
-                      child: Text(laterButtonText!),
-                    ),
+                    customLaterButton ??
+                        TextButton(
+                          onPressed: () {
+                            AppLogger.info(
+                              'User clicked "Later" button',
+                              'UpdateDialog',
+                            );
+                            Navigator.of(context).pop();
+                            onLater?.call();
+                          },
+                          style: TextButton.styleFrom(
+                            foregroundColor: defaultPrimaryColor,
+                            backgroundColor: Colors.transparent,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
+                            ),
+                          ),
+                          child: Text(laterButtonText!),
+                        ),
                   const SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: () {
-                      AppLogger.info(
-                        'User clicked "Update" button',
-                        'UpdateDialog',
-                      );
-                      Navigator.of(context).pop();
-                      onUpdate?.call();
-                      _launchUpdateUrl();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: defaultPrimaryColor,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 12,
+                  customUpdateButton ??
+                      ElevatedButton(
+                        onPressed: () {
+                          AppLogger.info(
+                            'User clicked "Update" button',
+                            'UpdateDialog',
+                          );
+                          Navigator.of(context).pop();
+                          onUpdate?.call();
+                          _launchUpdateUrl();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: defaultPrimaryColor,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                        ),
+                        child: Text(updateButtonText ?? 'Update Now'),
                       ),
-                    ),
-                    child: Text(updateButtonText ?? 'Update Now'),
-                  ),
                 ],
               ),
             ],

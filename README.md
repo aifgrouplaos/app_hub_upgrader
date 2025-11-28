@@ -71,7 +71,7 @@ void main() async {
   // Initialize AppHubUpgrader with global parameters
   AppHubUpgrader.initialize(
     appID: 'your-app-id',
-    navigatorKey: MyApp.navigatorKey,
+    navigatorKey: navigatorKey,
     useProduction: true,
   );
 

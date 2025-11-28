@@ -20,14 +20,12 @@ git add .
 git commit -m "Prepare release 1.0.0"
 
 # 2. Create annotated tag
-git tag -a v1.0.0 -m "Release version 1.0.0
+git tag -a v1.0.1 -m "Release version 1.0.0
 
-- Initial release
-- Check for app version updates from API
-- Display customizable update dialog with changelog
-- Support for forced updates
-- Platform-specific version checking (Android/iOS)
-- Automatic version detection"
+- Added initialize function.
+- Supported global navigator key for dialog.
+- Added Update dialog config.
+- Optimized and Fixed bug."
 
 # 3. Push tag to remote
 git push origin v1.0.0
@@ -68,4 +66,3 @@ git show v1.0.0
 ```
 
 See `GIT_VERSIONING.md` for complete documentation.
-

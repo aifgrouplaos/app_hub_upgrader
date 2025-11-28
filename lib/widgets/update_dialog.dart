@@ -153,7 +153,7 @@ class UpdateDialog extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: defaultPrimaryColor,
                       foregroundColor: Colors.white,
-                      minimumSize: const Size.fromWidth(double.infinity),
+                      minimumSize: const Size(double.maxFinite, 48),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24,
                         vertical: 12,

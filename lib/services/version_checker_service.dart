@@ -91,7 +91,7 @@ class VersionCheckerService {
       }
 
       AppLogger.info(
-        'Update check successful - hasUpdate: ${apiResponse.data!.hasUpdate}',
+        'Update check successful - hasUpdate: ${apiResponse.data!.updateAvailable}',
         'VersionCheckerService',
       );
 

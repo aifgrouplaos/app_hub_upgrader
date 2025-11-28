@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+
 import '../models/version_info_model.dart';
 import '../utils/app_logger.dart';
 
@@ -39,8 +40,8 @@ class UpdateDialog extends StatelessWidget {
     final defaultBackgroundColor =
         backgroundColor ?? theme.dialogBackgroundColor;
 
-    return WillPopScope(
-      onWillPop: () async => !updateInfo.isForcedUpdate,
+    return PopScope(
+      canPop: !updateInfo.isForced,
       child: Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         backgroundColor: defaultBackgroundColor,
@@ -89,7 +90,7 @@ class UpdateDialog extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceVariant,
+                    color: theme.colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Column(
@@ -139,7 +140,7 @@ class UpdateDialog extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  if (!updateInfo.isForcedUpdate && laterButtonText != null)
+                  if (!updateInfo.isForced && laterButtonText != null)
                     TextButton(
                       onPressed: () {
                         AppLogger.info(
@@ -182,8 +183,8 @@ class UpdateDialog extends StatelessWidget {
   }
 
   Future<void> _launchUpdateUrl() async {
-    if (updateInfo.downloadUrl != null && updateInfo.downloadUrl!.isNotEmpty) {
-      final uri = Uri.parse(updateInfo.downloadUrl!);
+    if (updateInfo.downloadURL != null && updateInfo.downloadURL!.isNotEmpty) {
+      final uri = Uri.parse(updateInfo.downloadURL!);
       AppLogger.info(
         'Launching download URL: ${uri.toString()}',
         'UpdateDialog',

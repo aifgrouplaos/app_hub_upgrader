@@ -75,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
         _isChecking = false;
       });
 
-      if (updateInfo != null && updateInfo.hasUpdate) {
+      if (updateInfo != null && updateInfo.updateAvailable) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Update available: ${updateInfo.latestVersion}'),
@@ -95,9 +95,11 @@ class _MyHomePageState extends State<MyHomePage> {
         _errorMessage = e.toString();
         _isChecking = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
-      );
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
     }
   }
 
@@ -118,7 +120,8 @@ class _MyHomePageState extends State<MyHomePage> {
         _isChecking = false;
       });
 
-      if (updateInfo != null && updateInfo.hasUpdate) {
+      if (updateInfo != null && updateInfo.updateAvailable) {
+        if (!context.mounted) return;
         // Show dialog manually
         await _upgrader.showUpdateDialog(context, updateInfo);
       }
@@ -204,14 +207,12 @@ class _MyHomePageState extends State<MyHomePage> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Text('Has Update: ${_updateInfo!.hasUpdate}'),
-                      if (_updateInfo!.currentVersion != null)
-                        Text('Current Version: ${_updateInfo!.currentVersion}'),
+                      Text('Has Update: ${_updateInfo!.updateAvailable}'),
                       if (_updateInfo!.latestVersion != null)
                         Text('Latest Version: ${_updateInfo!.latestVersion}'),
-                      Text('Forced Update: ${_updateInfo!.isForcedUpdate}'),
-                      if (_updateInfo!.downloadUrl != null)
-                        Text('Download URL: ${_updateInfo!.downloadUrl}'),
+                      Text('Forced Update: ${_updateInfo!.isForced}'),
+                      if (_updateInfo!.downloadURL != null)
+                        Text('Download URL: ${_updateInfo!.downloadURL}'),
                     ],
                   ),
                 ),

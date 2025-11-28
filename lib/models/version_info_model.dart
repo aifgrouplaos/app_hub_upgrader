@@ -1,36 +1,29 @@
 import 'change_logs_model.dart';
 
 class UpdateInfo {
-  final bool hasUpdate;
+  final bool updateAvailable;
   final String? latestVersion;
-  final String? currentVersion;
-  final bool isForcedUpdate;
-  final String? minSupportedVersion;
-  final String? downloadUrl;
+  final bool isForced;
+  final String? downloadURL;
   final Changelog? changelog;
-  final String? releaseDate;
 
   UpdateInfo({
-    this.hasUpdate = false,
+    this.updateAvailable = false,
     this.latestVersion,
-    this.currentVersion,
-    this.isForcedUpdate = false,
-    this.minSupportedVersion,
-    this.downloadUrl,
+    this.isForced = false,
     this.changelog,
-    this.releaseDate,
+    this.downloadURL,
   });
 
   factory UpdateInfo.fromJson(Map<String, dynamic> json) {
     return UpdateInfo(
-      hasUpdate: json['has_update'] ?? false,
-      latestVersion: json['latest_version'] ?? '',
-      currentVersion: json['current_version'] ?? '',
-      isForcedUpdate: json['is_forced_update'] ?? false,
-      minSupportedVersion: json['min_supported_version'] ?? '',
-      downloadUrl: json['download_url'] ?? '',
-      changelog: Changelog.fromJson(json['changelog'] ?? {}),
-      releaseDate: json['release_date'] ?? '',
+      updateAvailable: json['updateAvailable'] ?? false,
+      latestVersion: json['latestVersion'],
+      isForced: json['isForced'] ?? false,
+      changelog: json['changelog'] != null
+          ? Changelog.fromJson(json['changelog'])
+          : null,
+      downloadURL: json['downloadURL'],
     );
   }
 }

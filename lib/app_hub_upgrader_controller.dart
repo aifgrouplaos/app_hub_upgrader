@@ -40,9 +40,9 @@ class AppHubUpgrader {
       );
 
       AppLogger.info(
-        'Update check completed - hasUpdate: ${updateInfo.hasUpdate}, '
+        'Update check completed - updateAvailable: ${updateInfo.updateAvailable}, '
             'latestVersion: ${updateInfo.latestVersion}, '
-            'isForcedUpdate: ${updateInfo.isForcedUpdate}',
+            'isForcedUpdate: ${updateInfo.isForced}',
         'AppHubUpgrader',
       );
 
@@ -54,7 +54,7 @@ class AppHubUpgrader {
         return updateInfo;
       }
 
-      if (updateInfo.hasUpdate && showDialog) {
+      if (updateInfo.updateAvailable && showDialog) {
         final dialogContext = context ?? this.context;
         if (dialogContext != null && dialogContext.mounted) {
           AppLogger.info('Showing update dialog', 'AppHubUpgrader');
@@ -65,7 +65,7 @@ class AppHubUpgrader {
             'AppHubUpgrader',
           );
         }
-      } else if (!updateInfo.hasUpdate) {
+      } else if (!updateInfo.updateAvailable) {
         AppLogger.info(
           'No update available - app is up to date',
           'AppHubUpgrader',
@@ -94,14 +94,14 @@ class AppHubUpgrader {
     UpdateInfo updateInfo,
   ) async {
     AppLogger.debug(
-      'Displaying update dialog - forced: ${updateInfo.isForcedUpdate}, '
+      'Displaying update dialog - forced: ${updateInfo.isForced}, '
           'version: ${updateInfo.latestVersion}',
       'AppHubUpgrader',
     );
 
     await showDialog(
       context: context,
-      barrierDismissible: !updateInfo.isForcedUpdate,
+      barrierDismissible: !updateInfo.isForced,
       builder: (context) => UpdateDialog(
         updateInfo: updateInfo,
         title: dialogConfig?.title,

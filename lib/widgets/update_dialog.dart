@@ -139,7 +139,29 @@ class UpdateDialog extends StatelessWidget {
                   ),
                 ),
               const SizedBox(height: 24),
-
+              customUpdateButton ??
+                  ElevatedButton(
+                    onPressed: () {
+                      AppLogger.info(
+                        'User clicked "Update" button',
+                        'UpdateDialog',
+                      );
+                      Navigator.of(context).pop();
+                      onUpdate?.call();
+                      _launchUpdateUrl();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: defaultPrimaryColor,
+                      foregroundColor: Colors.white,
+                      minimumSize: const Size.fromWidth(double.infinity),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                    ),
+                    child: Text(updateButtonText ?? 'Update Now'),
+                  ),
+              const SizedBox(height: 6),
               // Buttons
               if (!updateInfo.isForced && laterButtonText != null)
                 customLaterButton ??
@@ -162,28 +184,6 @@ class UpdateDialog extends StatelessWidget {
                       ),
                       child: Text(laterButtonText!),
                     ),
-              const SizedBox(height: 12),
-              customUpdateButton ??
-                  ElevatedButton(
-                    onPressed: () {
-                      AppLogger.info(
-                        'User clicked "Update" button',
-                        'UpdateDialog',
-                      );
-                      Navigator.of(context).pop();
-                      onUpdate?.call();
-                      _launchUpdateUrl();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: defaultPrimaryColor,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 12,
-                      ),
-                    ),
-                    child: Text(updateButtonText ?? 'Update Now'),
-                  ),
             ],
           ),
         ),

@@ -273,6 +273,8 @@ class AppHubUpgrader {
         titleStyle: dialogConfig?.titleStyle,
         contentStyle: dialogConfig?.contentStyle,
         customIcon: dialogConfig?.customIcon,
+        customLaterButton: dialogConfig?.customLaterButton,
+        customUpdateButton: dialogConfig?.customUpdateButton,
       ),
     );
 
@@ -292,6 +294,8 @@ class UpdateDialogConfig {
   final TextStyle? titleStyle;
   final TextStyle? contentStyle;
   final Widget? customIcon;
+  final Widget? customLaterButton;
+  final Widget? customUpdateButton;
 
   const UpdateDialogConfig({
     this.title,
@@ -304,5 +308,7 @@ class UpdateDialogConfig {
     this.titleStyle,
     this.contentStyle,
     this.customIcon,
+    this.customLaterButton,
+    this.customUpdateButton,
   });
 }

@@ -141,60 +141,49 @@ class UpdateDialog extends StatelessWidget {
               const SizedBox(height: 24),
 
               // Buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  if (!updateInfo.isForced && laterButtonText != null)
-                    Expanded(
-                      child:
-                          customLaterButton ??
-                          TextButton(
-                            onPressed: () {
-                              AppLogger.info(
-                                'User clicked "Later" button',
-                                'UpdateDialog',
-                              );
-                              Navigator.of(context).pop();
-                              onLater?.call();
-                            },
-                            style: TextButton.styleFrom(
-                              foregroundColor: defaultPrimaryColor,
-                              backgroundColor: Colors.transparent,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 12,
-                              ),
-                            ),
-                            child: Text(laterButtonText!),
-                          ),
-                    ),
-                  const SizedBox(width: 10.0),
-                  Expanded(
-                    child:
-                        customUpdateButton ??
-                        ElevatedButton(
-                          onPressed: () {
-                            AppLogger.info(
-                              'User clicked "Update" button',
-                              'UpdateDialog',
-                            );
-                            Navigator.of(context).pop();
-                            onUpdate?.call();
-                            _launchUpdateUrl();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: defaultPrimaryColor,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 12,
-                            ),
-                          ),
-                          child: Text(updateButtonText ?? 'Update Now'),
+              if (!updateInfo.isForced && laterButtonText != null)
+                customLaterButton ??
+                    TextButton(
+                      onPressed: () {
+                        AppLogger.info(
+                          'User clicked "Later" button',
+                          'UpdateDialog',
+                        );
+                        Navigator.of(context).pop();
+                        onLater?.call();
+                      },
+                      style: TextButton.styleFrom(
+                        foregroundColor: defaultPrimaryColor,
+                        backgroundColor: Colors.transparent,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
                         ),
+                      ),
+                      child: Text(laterButtonText!),
+                    ),
+              const SizedBox(height: 12),
+              customUpdateButton ??
+                  ElevatedButton(
+                    onPressed: () {
+                      AppLogger.info(
+                        'User clicked "Update" button',
+                        'UpdateDialog',
+                      );
+                      Navigator.of(context).pop();
+                      onUpdate?.call();
+                      _launchUpdateUrl();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: defaultPrimaryColor,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
+                      ),
+                    ),
+                    child: Text(updateButtonText ?? 'Update Now'),
                   ),
-                ],
-              ),
             ],
           ),
         ),

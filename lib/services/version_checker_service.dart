@@ -67,6 +67,8 @@ class VersionCheckerService {
         'data': jsonData['data'],
       });
 
+      AppLogger.info('API response: $jsonData');
+
       if (!apiResponse.isSuccess) {
         AppLogger.error(
           'API request failed - Status: ${apiResponse.statusCode}, '
